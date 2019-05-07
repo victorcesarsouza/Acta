@@ -7,10 +7,14 @@ SabertoothSimplified ST;
 // Be sure to select Simplified Serial Mode for use with this library.
 // This sample uses a baud rate of 9600.
 //
-// Connections to make:
+// Connections to make (See Gunther_Assembly_Manual):
 //   Arduino TX->1  ->  Sabertooth S1
 //   Arduino GND    ->  Sabertooth 0V
 //   Arduino VIN    ->  Sabertooth 5V (OPTIONAL, if you want the Sabertooth to power the Arduino)
+//   Arduino PIN 3  ->  Encoder white cable LA 
+//   Arduino PIN 4  ->  Encoder white cable LB
+//   Arduino PIN 5  ->  Encoder white cable RA
+//   Arduino PIN 6  ->  Encoder white cable RB
 //
 // If you want to use a pin other than TX->1, see the SoftwareSerial example.
 
