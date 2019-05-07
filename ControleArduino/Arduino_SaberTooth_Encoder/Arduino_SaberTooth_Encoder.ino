@@ -32,7 +32,7 @@ bool flag = false;
 
 //variaveis controlador
 double epx = 0;
-int Ganho_Convertido = -40;
+int Converted_Gain = -40; // Start with this value for the wheel to start moving
 
 void setup()
 {
@@ -56,8 +56,8 @@ void full_forward() {
 }
 
 void half_forward() {
-  ST.motor(1, Ganho_Convertido);
-  ST.motor(2, -Ganho_Convertido);
+  ST.motor(1, Converted_Gain); //Gain of the PI control
+  ST.motor(2, -Converted_Gain);
 }
 
 void Stop() {
@@ -80,63 +80,76 @@ void full_left() {
   ST.motor(2, -127);
 }
 
+//Front controlled speed with PI
 void encoder_Forward() {
   n = digitalRead(encoder0PinA_Left);
   half_forward();
   if ((encoder0PinALast == LOW) && (n == HIGH)) {
     if (digitalRead(encoder0PinB_Left) == LOW) {
       encoder0Pos++;
+      // Time between encoder signals
       Delta_t = (millis() - PreviusMillis) * 0.001;
       PreviusMillis = millis();
       Sum_t = Sum_t + Delta_t;
-      vel = ((10 * PI / 180) / Delta_t) * 0.0775; //Velocidade com relação a 10 graus (sensibilidade do encoder) de deslocamento da roda de 7,5 cm de raio.
+      //Linear speed with respect to 10 degrees (encoder sensitivity) of wheel displacement of 7.5 cm radius.
+      vel = ((10 * PI / 180) / Delta_t) * 0.0775;
       Sum_vel = Sum_vel + vel;
 
-//      Serial.print("Velocidade Frontal Roda Direita ");
-//      Serial.print(encoder0Pos);
-//      Serial.print(": ");
-//      Serial.print(vel);
-//      Serial.println(" m/s");
+      //      Serial.print("Front wheel speed right ");
+      //      Serial.print(encoder0Pos);
+      //      Serial.print(": ");
+      //      Serial.print(vel);
+      //      Serial.println(" m/s");
     }
   }
+
   encoder0PinALast = n;
+  //Average speed of a wheel
   Media_vel = Sum_vel / encoder0Pos;
+  //Setting the linear velocity input
   float ref_velo = 0.5;
   double erro = ref_velo - Media_vel;
+  //Proportional gain
   double kp = 0.003;
+  //Integrative Gain
   double ki = 0.0003;
-  
-  
-  if(abs(erro) > 0.02){
-    double u = erro*kp + (erro+epx)*ki;
+
+
+  if (abs(erro) > 0.02) {
+    //PID control
+    double u = erro * kp + (erro + epx) * ki;
+    //Integrator Cumulative Error
     epx = epx + erro;
-    Ganho_Convertido = round(-127*u/0.6);
-    Serial.print("Velocidade: ");
+    //Speed saturation conversion
+    Converted_Gain = round(-127 * u / 0.6);
+    Serial.print("Velocity: ");
     Serial.print(vel);
     Serial.print(" Erro: ");
     Serial.print(erro);
-    Serial.print(" Ganho controlador: ");
+    Serial.print(" Controlled Gain: ");
     Serial.print(u);
-    Serial.print(" Ganho Convertido: ");
-    Serial.println(Ganho_Convertido);
-  }else{
-    Serial.print("Controlado! ");
-    Serial.print("Media da Velocidade: ");
+    Serial.print(" Gain Converted: ");
+    Serial.println(Converted_Gain);
+  } else {
+    Serial.print("Controlled! ");
+    Serial.print("Media Velocity: ");
     Serial.println(Media_vel);
   }
 
-  
+  //Setting the distance to be traveled (100 cm -> 1 meter)
   if (Media_vel * Sum_t >= 100) {
     Stop();
     delay(3000);
-    Sum_vel=0;
+    Sum_vel = 0;
     encoder0Pos = 0;
     Sum_t = 0;
     PreviusMillis = millis();
+    //Change the flag to enter the rotation routine
     flag = true;
   }
 }
 
+//Control of the right rotation distance without PI
 void encoder_Right() {
   n = digitalRead(encoder0PinA_Left);
   half_right();
@@ -144,34 +157,39 @@ void encoder_Right() {
     if (digitalRead(encoder0PinB_Left) == LOW) {
       encoder0Pos++;
       Delta_t = (millis() - PreviusMillis) * 0.001;
+      // Time between encoder signals
       PreviusMillis = millis();
       Sum_t = Sum_t + Delta_t;
-      vel = ((10 * PI / 180) / Delta_t) * 0.0775; //Velocidade com relação a 10 graus (sensibilidade do encoder) de deslocamento da roda de 7,5 cm de raio.
+      // Velocity with respect to 10 degrees (encoder sensitivity) of wheel displacement of 7.5 cm radius.
+      vel = ((10 * PI / 180) / Delta_t) * 0.0775; 
       Sum_vel = Sum_vel + vel;
 
-//      Serial.print("Velocidade Rotação Direita Roda Esquerda ");
-//      Serial.print(encoder0Pos);
-//      Serial.print(": ");
-//      Serial.print(vel);
-//      Serial.println(" m/s");
+      //      Serial.print("Velocity Right Rotation Left Wheel ");
+      //      Serial.print(encoder0Pos);
+      //      Serial.print(": ");
+      //      Serial.print(vel);
+      //      Serial.println(" m/s");
     }
   }
   encoder0PinALast = n;
   Media_vel = Sum_vel / encoder0Pos;
+  //Setting the distance to be traveled (perimeter -> 0.66 = 180 degress)
   if (Media_vel * Sum_t >= 0.66) {
     Stop();
     delay(3000);
-    Sum_vel=0;
+    Sum_vel = 0;
     encoder0Pos = 0;
     Sum_t = 0;
+    // Time between encoder signals
     PreviusMillis = millis();
+    //Change the flag to enter the frontal routine
     flag = false;
   }
 }
 
 void loop()
 {
-
+  // Routine to rotate 360 degrees a wheel
   //  if (encoder0Pos == 36) {
   //    Stop();
   //    delay(3000);
@@ -179,11 +197,13 @@ void loop()
   //    encoder0Pos = 0;
   //  }
 
-//  if (flag == false) {
-    encoder_Forward();
-//  }
-//  if (flag == true) {
-//    encoder_Right();
-//  }
+
+  // Routine go forward turn 180 degrees and go back
+  //  if (flag == false) {
+  encoder_Forward();
+  //  }
+  //  if (flag == true) {
+  //    encoder_Right();
+  //  }
 
 }
