@@ -35,7 +35,7 @@ float Media_vel = 0;
 float  PreviusMillis = 0;
 bool flag = false;
 
-//variaveis controlador
+//Controller variable
 double epx = 0;
 int Converted_Gain = -40; // Start with this value for the wheel to start moving
 
