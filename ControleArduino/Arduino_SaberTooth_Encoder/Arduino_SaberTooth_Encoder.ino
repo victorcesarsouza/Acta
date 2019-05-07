@@ -3,9 +3,9 @@ SabertoothSimplified ST;
 
 // We'll name the Sabertooth object ST.
 // For how to configure the Sabertooth, see the DIP Switch Wizard for
-//   http://www.dimensionengineering.com/datasheets/SabertoothDIPWizard/start.htm
+// https://www.dimensionengineering.com/datasheets/Sabertooth2x60.pdf
 // Be sure to select Simplified Serial Mode for use with this library.
-// This sample uses a baud rate of 9600.
+// This sample uses a baud rate of 9600 (page 6 and 16 on Sabertotth2x60 manual).
 //
 // Connections to make (See Gunther_Assembly_Manual):
 //   Arduino TX->1  ->  Sabertooth S1
@@ -15,6 +15,7 @@ SabertoothSimplified ST;
 //   Arduino PIN 4  ->  Encoder white cable LB
 //   Arduino PIN 5  ->  Encoder white cable RA
 //   Arduino PIN 6  ->  Encoder white cable RB
+//   https://learn.parallax.com/tutorials/robot/arlo/arlo-robot-assembly-guide/section-1-motor-mount-and-wheel-kit-assembly/step-6
 //
 // If you want to use a pin other than TX->1, see the SoftwareSerial example.
 
