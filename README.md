@@ -1,0 +1,3 @@
+# Gunther Project (AMR)
+
+This project aimed at the development of an autonomous trajectory planner robot, using [laser sensor](http://www.slamtec.com/en/lidar/a1) and [encoders](https://learn.parallax.com/tutorials/robot/arlo/arlo-robot-assembly-guide/section-1-motor-mount-and-wheel-kit-assembly/step-7) for mapping and location and a base of a [differential robot](https://www.parallax.com/product/28966).
