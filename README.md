@@ -35,5 +35,7 @@ Arduino PIN 6  ->  Encoder white cable RB
 
 [Ecoder white Cables](https://learn.parallax.com/tutorials/robot/arlo/arlo-robot-assembly-guide/section-1-motor-mount-and-wheel-kit-assembly/step-6)
 
+[Encoder Code Arduino](https://github.com/victorcesarsouza/git_Acta/blob/master/ControleArduino/Arduino_SaberTooth_Encoder/Arduino_SaberTooth_Encoder.ino)
+
 
 ## Integration
